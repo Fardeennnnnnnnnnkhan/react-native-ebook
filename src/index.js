@@ -16,6 +16,10 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
+app.get("/", (req, res) => {
+    res.status(200).send("✅ Server is alive");
+  });
+  
 app.use("/api/auth" , authRoutes)
 app.use("/api/books" , booksRoutes)
 

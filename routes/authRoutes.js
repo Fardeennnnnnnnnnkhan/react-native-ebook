@@ -9,52 +9,57 @@ const generateToken =(userId) =>{
    return  jwt.sign({userId} ,process.env.JWT_SECRET, {expiresIn : "15d"})
 }
 
-router.post("/register" , async (req , res) =>{
-    try {
-        const {username,email,password } = req.body;
-    
-        // Check for missing fields
-        if (!username || !email || !password) {
-          return res.status(400).json({ message: "All fields are required" });
-        }
-    
-        // Check if user already exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-          return res.status(400).json({ message: "User already exists" });
-        }
-    
-        // Hash the password    
-        const profileImage = `https://api.dicebear.com/9.x/avataaars/svg?seed=${username}`
-        // Save the new user
-        const user = new User({
-          username,
-          email,
-          password,
-          profileImage,
-        });
-    
-        await user.save();
-    
-        // Create a JWT token
-        const token =  generateToken(user._id)
-    
-        res.status(201).json({
-          message: "User registered successfully",
-          token,
-          user: {
-            id: user._id,
-            username: user.username,
-            email: user.email,
-            profileImage : user.profileImage,
-          }
-        });
-    
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Server error" });
-      }
-})
+router.post("/register", async (req, res) => {
+  try {
+    console.log("📥 Register route hit", req.body);
+
+    const { username, email, password } = req.body;
+
+    if (!username || !email || !password) {
+      console.log("❌ Missing fields");
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const existingUser = await User.findOne({ email });
+    console.log("🔍 Existing user check done");
+
+    if (existingUser) {
+      console.log("⚠️ User already exists");
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const profileImage = `https://api.dicebear.com/9.x/avataaars/svg?seed=${username}`;
+
+    const user = new User({
+      username,
+      email,
+      password,
+      profileImage,
+    });
+
+    await user.save();
+    console.log("✅ User saved");
+
+    const token = generateToken(user._id);
+    console.log("🔑 Token generated");
+
+    res.status(201).json({
+      message: "User registered successfully",
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        profileImage: user.profileImage,
+      },
+    });
+
+  } catch (error) {
+    console.error("🔥 Error during register:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 
 

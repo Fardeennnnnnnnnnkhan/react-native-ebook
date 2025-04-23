@@ -36,6 +36,7 @@ router.post("/", protectRoute, async (req, res) => {
   }
 });
 
+
 router.get("/", protectRoute, async (req, res) => {
   try {
     const page = req.query.page || 1;
@@ -64,6 +65,7 @@ router.get("/", protectRoute, async (req, res) => {
 //recommadation books function
 router.get("/user", protectRoute, async (req, res) => {
     try{
+      console.log("User in route:", req.user && req.user._id);
         const books = await Book.find({user : req.user._id}).sort({createdAt : -1})
         res.json(books)
     }catch(err){

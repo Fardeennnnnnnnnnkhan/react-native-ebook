@@ -36,7 +36,7 @@ router.post("/", protectRoute, async (req, res) => {
   }
 });
 
-router.post("/", protectRoute, async (req, res) => {
+router.get("/", protectRoute, async (req, res) => {
   try {
     const page = req.query.page || 1;
     const limit = req.query.limit || 5;
@@ -62,7 +62,7 @@ router.post("/", protectRoute, async (req, res) => {
 });
 
 //recommadation books function
-router.post("/", protectRoute, async (req, res) => {
+router.get("/user", protectRoute, async (req, res) => {
     try{
         const books = await Book.find({user : req.user._id}).sort({createdAt : -1})
         res.json(books)
@@ -72,7 +72,7 @@ router.post("/", protectRoute, async (req, res) => {
     }
 })
 
-router.post("/:id", protectRoute, async (req, res) => {
+router.delete("/:id", protectRoute, async (req, res) => {
     try{
         const book = await Book.findById(req.params.id)
         if(!book) return res.status(404).json({message : "Book Not Found"})
